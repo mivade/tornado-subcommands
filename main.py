@@ -1,3 +1,4 @@
+import time
 from tornado.options import OptionParser
 
 
@@ -48,7 +49,7 @@ class Parser(OptionParser):
                 print(" ", subcommand.name, "\n\t", subcommand.__doc__)
 
 
-class Subone(Subparser):
+class Options(Subparser):
     """Print all options and exit."""
     def define_options(self):
         self.options.define("count", default=1, help="A count")
@@ -57,11 +58,19 @@ class Subone(Subparser):
         self.options.parse_command_line(rest)
         print(parent_options.as_dict())
         print(self.options.as_dict())
-        print("subone executed!")
+        print("Options executed!")
+
+
+class CountToTen(Subparser):
+    """Count to ten and exit."""
+    def call(self, parent_options, rest):
+        for n in range(1, 11):
+            print(n)
+            time.sleep(0.2)
 
 
 def main():
-    parser = Parser(subcommands=[Subone()])
+    parser = Parser(subcommands=[Options(), CountToTen(name="count")])
     parser.define("verbose", type=bool, default=False,
                   help="Enable verbose output")
     rest = parser.parse_command_line()
